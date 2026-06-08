@@ -1,0 +1,40 @@
+# Tres servicios para comparar las tres versiones del chatbot lado a lado:
+#   8000  vulnerable (sin separacion estructural ni filtros)
+#   8001  parcheado con separacion estructural + blacklists
+#   8002  parcheado con separacion estructural + guardrails Haiku
+#
+# El servicio 8001 acepta la variable DISABLE_BLACKLISTS para aislar capas:
+#   DISABLE_BLACKLISTS=true docker compose up cenit-propuestas-parcheado -d
+#     => solo separacion estructural, blacklists desactivadas
+#   docker compose up cenit-propuestas-parcheado -d
+#     => separacion estructural + blacklists activas (defecto)
+
+services:
+
+  cenit-propuestas-vulnerable:
+    build: .
+    command: uvicorn app_vulnerable:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    restart: unless-stopped
+
+  cenit-propuestas-parcheado:
+    build: .
+    command: uvicorn app_parcheada:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8001:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - DISABLE_BLACKLISTS=${DISABLE_BLACKLISTS:-false}
+    restart: unless-stopped
+
+  cenit-propuestas-parcheado-v2:
+    build: .
+    command: uvicorn app_parcheada_v2:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8002:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    restart: unless-stopped
