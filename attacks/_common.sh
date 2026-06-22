@@ -17,5 +17,5 @@ attack() {
     curl -s -X POST "$ENDPOINT" \
         -H "Content-Type: application/json" \
         -d "$(jq -nc --arg c "$prompt" '{content:$c}')" \
-        | python3 -m json.tool
+        | jq -r '.response'
 }
