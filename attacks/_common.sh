@@ -1,7 +1,7 @@
 #!/bin/bash
 # Helpers compartidos por los scripts de ataque.
 
-ENDPOINT="${ENDPOINT:-http://localhost:8001/chat}"
+ENDPOINT="${ENDPOINT:-http://localhost:8000/chat}"
 
 attack() {
     local label="$1"

@@ -87,7 +87,7 @@ async def chat(message: UserMessage):
     # CAPA 2 (separacion estructural): SIEMPRE activa.
     # El system prompt va al campo 'system' separado del input del usuario.
     response = client.messages.create(
-        model="claude-3-5-sonnet-20241022",
+        model="claude-sonnet-4-6",
         max_tokens=1000,
         system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": message.content}]

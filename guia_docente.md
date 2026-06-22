@@ -49,7 +49,7 @@ El contenedor vulnerable concatena las instrucciones del sistema y del usuario d
 
 ### Fase 2.1: Separación Estructural (Puerto 8001, modo DISABLE_BLACKLISTS=true)
 El código de la aplicación parcheada utiliza la API de Anthropic correctamente, pasando el prompt de sistema al campo `system` y la pregunta al campo `messages` con rol `user`.
-*   **Efecto:** Los modelos modernos (como Claude 3.5 Sonnet) están entrenados para priorizar las instrucciones que provienen del canal `system`. Los ataques 1 y 2 se debilitarán enormemente y el modelo tenderá a rechazar la inyección directa de forma natural.
+*   **Efecto:** Los modelos modernos (como Claude Sonnet 4.6) están entrenados para priorizar las instrucciones que provienen del canal `system`. Los ataques 1 y 2 se debilitarán enormemente y el modelo tenderá a rechazar la inyección directa de forma natural.
 *   **Mensaje a transmitir:** La separación estructural es la primera y mejor defensa de la arquitectura, y es prácticamente gratuita.
 
 ### Fase 2.2: Añadir Blacklists (Puerto 8001, modo DISABLE_BLACKLISTS=false)
@@ -80,8 +80,8 @@ Guía la conversación final con estas 3 preguntas clave:
     *   *Causa:* No copiaron `app_parcheada_v2.py` en el `Dockerfile`.
     *   *Solución:* Asegurarse de que el `Dockerfile` contiene `COPY app_*.py ./` antes de construir.
 2.  **Errores HTTP 400 (Bad Request):**
-    *   *Causa:* Utilizan nombres de modelos obsoletos o ficticios (p. ej., `claude-sonnet-4-6`).
-    *   *Solución:* Comprobar que en todos los archivos `app_*.py` las constantes de modelos usan identificadores oficiales (`claude-3-5-sonnet-20241022` y `claude-3-5-haiku-20241022`).
+    *   *Causa:* Utilizan identificadores de modelo del formato antiguo (`claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`) que han quedado obsoletos.
+    *   *Solución:* Comprobar que en todos los archivos `app_*.py` las constantes de modelos usan los identificadores actuales: `claude-sonnet-4-6` para el modelo principal y `claude-haiku-4-5-20251001` para el guardrail.
 3.  **El contenedor no inicia por problemas de clave:**
     *   *Causa:* La variable de entorno `ANTHROPIC_API_KEY` en el archivo `.env` no tiene el formato correcto o está vacía.
     *   *Solución:* Copiar correctamente el `.env.example`, rellenar la clave y reiniciar los contenedores.

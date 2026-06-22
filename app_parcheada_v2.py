@@ -25,11 +25,11 @@ app = FastAPI(title="Cenit Propuestas (parcheada — Variante B)")
 client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
 # Modelo principal del asistente
-MAIN_MODEL = "claude-3-5-sonnet-20241022"
+MAIN_MODEL = "claude-sonnet-4-6"
 
 # Modelo del guardrail. Haiku es mas rapido y barato; suficiente para
 # clasificacion binaria.
-GUARDRAIL_MODEL = "claude-3-5-haiku-20241022"
+GUARDRAIL_MODEL = "claude-haiku-4-5-20251001"
 
 SYSTEM_PROMPT = """Eres el asistente interno de Cenit, S.L. para redacción de propuestas comerciales.
 Ayudas a los consultores a preparar propuestas para clientes en transformación digital y gobernanza de IA.

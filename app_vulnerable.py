@@ -1,11 +1,18 @@
 import os
-import anthropic
+from openai import OpenAI
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 app = FastAPI(title="Cenit Propuestas (vulnerable)")
 
-client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+# Modelo open-source con entrenamiento de seguridad débil:
+# susceptible a inyección directa de instrucciones.
+MODEL = "llama-3.1-8b-instant"
+
+client = OpenAI(
+    base_url="https://api.groq.com/openai/v1",
+    api_key=os.environ["GROQ_API_KEY"],
+)
 
 SYSTEM_PROMPT = """Eres el asistente interno de Cenit, S.L. para redacción de propuestas comerciales.
 Ayudas a los consultores a preparar propuestas para clientes en transformación digital y gobernanza de IA.
@@ -37,14 +44,14 @@ async def chat(message: UserMessage):
     # instrucciones de confianza y qué es input externo no confiable.
     prompt = SYSTEM_PROMPT + "\n\nUsuario: " + message.content
 
-    response = client.messages.create(
-        model="claude-3-5-sonnet-20241022",
+    response = client.chat.completions.create(
+        model=MODEL,
         max_tokens=1000,
-        messages=[{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": prompt}],
     )
-    return {"response": response.content[0].text}
+    return {"response": response.choices[0].message.content}
 
 
 @app.get("/")
 async def root():
-    return {"servicio": "Cenit Propuestas", "version": "vulnerable", "puerto": 8000}
+    return {"servicio": "Cenit Propuestas", "version": "vulnerable", "modelo": MODEL, "puerto": 8000}
